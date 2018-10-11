@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -37,7 +38,7 @@ public class methinksitsaweasel {
                 counter++;
             }
         }
-        System.out.println(new String(indivudual) + ", fit = " + counter);
+//        System.out.println(new String(indivudual) + ", fit = " + counter);
         return counter;
     }
 
@@ -51,10 +52,10 @@ public class methinksitsaweasel {
      */
     protected static char[] mutate(char[] individual) {
         Random random = new Random();
-        char[] mutatedIndividual = new char[28] ;
+        char[] mutatedIndividual = new char[len] ;
         
         for (int i = 0; i < len; i++) {
-            if(new Random().nextInt(28)==0) {
+            if(new Random().nextInt(len)==0) {
                 mutatedIndividual[i] = (char) (random.nextInt(127 - 32 + 1) + 32);
             } else {
                 mutatedIndividual[i] = individual[i];
@@ -76,7 +77,7 @@ public class methinksitsaweasel {
     protected static String hillClimber() {
         char[] A = generateIndividual();
 
-        while(evalutateIndividual(target, A) != 28) {
+        while(evalutateIndividual(target, A) != len) {
             char[] B = mutate(A);
 
             if (evalutateIndividual(target, B) > evalutateIndividual(target, A)) {
@@ -86,42 +87,77 @@ public class methinksitsaweasel {
         return new String(A);
     }
 
+    protected static char[][] generatePopultation(int numberOfIndividuals) {
+        char[][] pop = new char[28][];
+
+        for (int i = 0; i < len; i++) {
+                pop[i] = generateIndividual();
+        }
+        return pop;
+    }
+
+    protected static int populationFitness(char[][] pop) {
+        int maxFitness = 0;
+        int fitness;
+
+        for (int i = 0; i < pop.length; i++) {
+            fitness = evalutateIndividual(target, pop[i]);
+            if(fitness > maxFitness) {
+                maxFitness = fitness;
+            }
+        }
+        System.out.println("fitness: " + maxFitness);
+        return maxFitness;
+    }
+
     /**
      * STEP 4.2: A GA without crossover
      * 
      */
     protected static void noCrossover() {
-        
-        ArrayList pop = new ArrayList();
-        
-        for(int i = 0; i < 499; i++) {
-            pop.add(generateIndividual());
-        }
-        
-        boolean maxFitnessFound = false;
-        while(maxFitnessFound != true) {
-            char[] A = (char[]) pop.get(new Random().nextInt(pop.size()));
-            char[] B = (char[]) pop.get(new Random().nextInt(pop.size()));
 
-            char[] parent1;
+        char[][] pop = generatePopultation(10);
+        char[] parent1;
+        char[] child;
+        char[] A;
+        char[] B;
+
+        System.out.println("-----------------------------------------");
+
+        while(populationFitness(pop) != len) {
+            A = pop[new Random().nextInt(pop.length)];
+            B = pop[new Random().nextInt(pop.length)];
+//            System.out.println("A " + new String(A));
+//            System.out.println("B " + new String(B));
+
+
             if(evalutateIndividual(target, A) > evalutateIndividual(target, B)) {
                 parent1 = A;
             } else {
                 parent1 = B;
             }
 
-            char[] child = mutate(parent1);
+//            System.out.println("parent1 " + new String(parent1));
 
-            A = (char[]) pop.get(new Random().nextInt(pop.size()));
-            B = (char[]) pop.get(new Random().nextInt(pop.size()));
+            child = mutate(parent1);
+//            System.out.println("child " + new String(child));
+
+            A = pop[new Random().nextInt(pop.length)];
+            B = pop[new Random().nextInt(pop.length)];
+//            System.out.println("A2 " + new String(A));
+//            System.out.println("B2 " + new String(B));
 
             if(evalutateIndividual(target, A) > evalutateIndividual(target, B)) {
-                child = B;
+                B = child;
             } else {
-                child = A;
+                A = child;
             }
 
+//            System.out.println("A3 " + new String(A));
+//            System.out.println("B3 " + new String(B));
+
         }
+
     }
 
 
@@ -202,8 +238,8 @@ public class methinksitsaweasel {
         //System.out.print(new String(generateIndividual()));
 //        evalutateIndividual(target, generateIndividual());
 //        mutate(generateIndividual());
-        hillClimber();
-
+//        hillClimber();
+        noCrossover();
 
     }
 }
