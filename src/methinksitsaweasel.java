@@ -37,7 +37,7 @@ public class methinksitsaweasel {
                 counter++;
             }
         }
-        System.out.print(new String(indivudual) + ", fit = " + counter);
+        System.out.println(new String(indivudual) + ", fit = " + counter);
         return counter;
     }
 
@@ -51,18 +51,18 @@ public class methinksitsaweasel {
      */
     protected static char[] mutate(char[] individual) {
         Random random = new Random();
-        char[] mutatedIndividual = individual ;
+        char[] mutatedIndividual = new char[28] ;
         
         for (int i = 0; i < len; i++) {
-            if(Math.random() < (1/len)) {
+            if(new Random().nextInt(28)==0) {
                 mutatedIndividual[i] = (char) (random.nextInt(127 - 32 + 1) + 32);
             } else {
                 mutatedIndividual[i] = individual[i];
             }
         }
         
-        System.out.println(new String(mutatedIndividual));
-        System.out.println(new String(individual));
+//        System.out.println(new String(mutatedIndividual));
+//        System.out.println(new String(individual));
         
         return mutatedIndividual;
         
@@ -75,16 +75,14 @@ public class methinksitsaweasel {
      */
     protected static String hillClimber() {
         char[] A = generateIndividual();
-        
-        
+
         while(evalutateIndividual(target, A) != 28) {
             char[] B = mutate(A);
-            
-            if(evalutateIndividual(target, B) > evalutateIndividual(target, A)) {
+
+            if (evalutateIndividual(target, B) > evalutateIndividual(target, A)) {
                 A = B;
             }
         }
-        
         return new String(A);
     }
 
@@ -205,5 +203,7 @@ public class methinksitsaweasel {
 //        evalutateIndividual(target, generateIndividual());
 //        mutate(generateIndividual());
         hillClimber();
+
+
     }
 }
